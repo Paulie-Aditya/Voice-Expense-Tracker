@@ -6,9 +6,10 @@ import pandas as pd
 from dotenv import load_dotenv
 from flask_cors import CORS
 import os
+import json
 
 app = Flask(__name__)
-
+CORS(app)
 load_dotenv()
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -34,6 +35,11 @@ def sheet_to_df(sheet):
 
 @app.route("/log-expense", methods=["POST"])
 def log_expense():
+    raw_data = request.get_data(as_text=True)
+    print("Raw data:", raw_data)
+    parsed_data = json.loads(raw_data)
+    print("Parsed JSON:", parsed_data)
+    data = parsed_data
     data = request.json
     required = ["username", "amount", "category", "description"]
     if not all(k in data for k in required):
