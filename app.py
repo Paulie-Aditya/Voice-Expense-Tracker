@@ -37,7 +37,6 @@ def sheet_to_df(sheet):
 def log_expense():
     raw_data = request.get_data(as_text=True)
     data = json.loads(raw_data)
-    print(data)
     toolCallId = data['message']['toolCalls'][-1]['id']
     data = data['message']['toolCalls'][-1]['function']['arguments']
     required = ["username", "amount", "category", "description"]
