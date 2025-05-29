@@ -37,8 +37,9 @@ def sheet_to_df(sheet):
 def log_expense():
     raw_data = request.get_data(as_text=True)
     data = json.loads(raw_data)
-    data = data['message']['toolCalls'][-1]['function']['arguments']
+    print(data)
     toolCallId = data['message']['toolCalls'][-1]['id']
+    data = data['message']['toolCalls'][-1]['function']['arguments']
     required = ["username", "amount", "category", "description"]
     if not all(k in data for k in required):
         return jsonify({
@@ -62,7 +63,6 @@ def log_expense():
         data["description"],
         data.get("notes", "")
     ])
-    toolCallId = data['toolCalls'][-1]['id']
     return jsonify({
         "results": [
             {
@@ -76,8 +76,8 @@ def log_expense():
 def edit_expense():
     raw_data = request.get_data(as_text=True)
     data = json.loads(raw_data)
-    data = data['message']['toolCalls'][-1]['function']['arguments']
     toolCallId = data['message']['toolCalls'][-1]['id']
+    data = data['message']['toolCalls'][-1]['function']['arguments']
     required = ["username", "id"]
     if not all(k in data for k in required):
         return jsonify({
@@ -122,8 +122,8 @@ def edit_expense():
 def summary():
     raw_data = request.get_data(as_text=True)
     data = json.loads(raw_data)
-    data = data['message']['toolCalls'][-1]['function']['arguments']
     toolCallId = data['message']['toolCalls'][-1]['id']
+    data = data['message']['toolCalls'][-1]['function']['arguments']
     required = ["username"]
     if not all(k in data for k in required):
         return jsonify({
@@ -168,8 +168,8 @@ def summary():
 def set_budget():
     raw_data = request.get_data(as_text=True)
     data = json.loads(raw_data)
-    data = data['message']['toolCalls'][-1]['function']['arguments']
     toolCallId = data['message']['toolCalls'][-1]['id']
+    data = data['message']['toolCalls'][-1]['function']['arguments']
     required = ["username", "category", "amount"]
     if not all(k in data for k in required):
         return jsonify({
@@ -206,8 +206,8 @@ def set_budget():
 def get_expenses():
     raw_data = request.get_data(as_text=True)
     data = json.loads(raw_data)
-    data = data['message']['toolCalls'][-1]['function']['arguments']
     toolCallId = data['message']['toolCalls'][-1]['id']
+    data = data['message']['toolCalls'][-1]['function']['arguments']
     required = ["username"]
     if not all(k in data for k in required):
         return jsonify({
@@ -249,8 +249,8 @@ def get_expenses():
 def top_categories():
     raw_data = request.get_data(as_text=True)
     data = json.loads(raw_data)
-    data = data['message']['toolCalls'][-1]['function']['arguments']
     toolCallId = data['message']['toolCalls'][-1]['id']
+    data = data['message']['toolCalls'][-1]['function']['arguments']
     required = ["username"]
     if not all(k in data for k in required):
         return jsonify({
