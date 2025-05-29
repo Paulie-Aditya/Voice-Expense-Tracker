@@ -54,11 +54,13 @@ def log_expense():
         data["description"],
         data.get("notes", "")
     ])
-    return jsonify({"message": "Expense logged"}), 200
+    return jsonify({"message": "Expense logged", "id": next_id}), 200
 
 @app.route("/edit-expense", methods=["POST"])
 def edit_expense():
-    data = request.json
+    raw_data = request.get_data(as_text=True)
+    data = json.loads(raw_data)
+    data = data['message']['toolCalls'][-1]['function']['arguments']
     required = ["username", "id"]
     if not all(k in data for k in required):
         return jsonify({"error": "Missing fields"}), 400
@@ -105,7 +107,9 @@ def summary():
 
 @app.route("/set-budget", methods=["POST"])
 def set_budget():
-    data = request.json
+    raw_data = request.get_data(as_text=True)
+    data = json.loads(raw_data)
+    data = data['message']['toolCalls'][-1]['function']['arguments']
     required = ["username", "category", "amount"]
     if not all(k in data for k in required):
         return jsonify({"error": "Missing required fields"}), 400
