@@ -80,11 +80,17 @@ def edit_expense():
             return jsonify({"message": "Expense updated"}), 200
     return jsonify({"error": "Expense not found"}), 404
 
-@app.route("/summary", methods=["GET"])
+@app.route("/summary", methods=["POST"])
 def summary():
-    username = request.args.get("username")
-    period = request.args.get("period")
-    category = request.args.get("category")
+    raw_data = request.get_data(as_text=True)
+    data = json.loads(raw_data)
+    data = data['message']['toolCalls'][-1]['function']['arguments']
+    required = ["username"]
+    if not all(k in data for k in required):
+        return jsonify({"error": "Missing fields"}), 400
+    username = data.get("username")
+    period = data.get("period","month")
+    category = data.get("category")
 
     sheet = get_or_create_user_sheet(username)
     df = sheet_to_df(sheet)
@@ -129,31 +135,43 @@ def set_budget():
 
     return jsonify({"message": "Budget updated"}), 200
 
-@app.route("/get-expenses", methods=["GET"])
+@app.route("/get-expenses", methods=["POST"])
 def get_expenses():
-    username = request.args.get("username")
+    raw_data = request.get_data(as_text=True)
+    data = json.loads(raw_data)
+    data = data['message']['toolCalls'][-1]['function']['arguments']
+    required = ["username"]
+    if not all(k in data for k in required):
+        return jsonify({"error": "Missing fields"}), 400
+    username = data.get("username")
     sheet = get_or_create_user_sheet(username)
     rows = sheet.get_all_records()
     return jsonify({"expenses": rows[-5:]}), 200  # return last 5
 
-@app.route("/delete-expense", methods=["DELETE"])
-def delete_expense():
-    data = request.json
-    required = ["username", "id"]
+# @app.route("/delete-expense", methods=["POST"])
+# def delete_expense():
+#     data = request.json
+#     required = ["username", "id"]
+#     if not all(k in data for k in required):
+#         return jsonify({"error": "Missing fields"}), 400
+
+#     sheet = get_or_create_user_sheet(data["username"])
+#     rows = sheet.get_all_values()
+#     for idx, row in enumerate(rows[1:], start=2):
+#         if str(row[0]) == str(data["id"]):
+#             sheet.delete_row(idx)
+#             return jsonify({"message": "Expense deleted"}), 200
+#     return jsonify({"error": "Expense not found"}), 404
+
+@app.route("/top-categories", methods=["POST"])
+def top_categories():
+    raw_data = request.get_data(as_text=True)
+    data = json.loads(raw_data)
+    data = data['message']['toolCalls'][-1]['function']['arguments']
+    required = ["username"]
     if not all(k in data for k in required):
         return jsonify({"error": "Missing fields"}), 400
-
-    sheet = get_or_create_user_sheet(data["username"])
-    rows = sheet.get_all_values()
-    for idx, row in enumerate(rows[1:], start=2):
-        if str(row[0]) == str(data["id"]):
-            sheet.delete_row(idx)
-            return jsonify({"message": "Expense deleted"}), 200
-    return jsonify({"error": "Expense not found"}), 404
-
-@app.route("/top-categories", methods=["GET"])
-def top_categories():
-    username = request.args.get("username")
+    username = data.get("username")
     sheet = get_or_create_user_sheet(username)
     df = sheet_to_df(sheet)
     df["Amount"] = df["Amount"].astype(float)

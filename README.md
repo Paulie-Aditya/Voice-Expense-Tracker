@@ -98,11 +98,12 @@ python app.py
 | Method | Route             | Description                       |
 | ------ | ----------------- | --------------------------------- |
 | POST   | `/log-expense`    | Logs a new expense                |
-| PUT    | `/edit-expense`   | Edits an existing expense entry   |
-| DELETE | `/delete-expense` | Deletes an expense                |
-| GET    | `/get-expenses`   | Fetches all expenses for a user   |
-| GET    | `/summary`        | Returns monthly/overall summary   |
-| GET    | `/budget`         | Returns remaining budget by month |
+| POST   | `/edit-expense`   | Edits an existing expense entry   |
+| POST   | `/delete-expense` | Deletes an expense                |
+| POST   | `/set-budget`     | Sets budget                       |
+| POST   | `/get-expenses`   | Fetches all expenses for a user   |
+| POST   | `/summary`        | Returns monthly/overall summary   |
+| POST   | `/budget`         | Returns remaining budget by month |
 
 All endpoints accept and return **JSON**.
 
