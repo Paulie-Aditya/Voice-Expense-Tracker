@@ -36,11 +36,8 @@ def sheet_to_df(sheet):
 @app.route("/log-expense", methods=["POST"])
 def log_expense():
     raw_data = request.get_data(as_text=True)
-    print("Raw data:", raw_data)
-    parsed_data = json.loads(raw_data)
-    print("Parsed JSON:", parsed_data)
-    data = parsed_data
-    data = request.json
+    data = json.loads(raw_data)
+    data = data['message']['toolCalls'][-1]['function']['arguments']
     required = ["username", "amount", "category", "description"]
     if not all(k in data for k in required):
         return jsonify({"error": "Missing required fields"}), 400

@@ -2,3 +2,5 @@
 .env
 .vscode/
 credentials.json
+dump.txt
+test.py
